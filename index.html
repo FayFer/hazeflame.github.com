@@ -1,27 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title></title>
-<style type="text/css">
-	div{
-		width: 500px;
-		height: 500px;
-		background: red;
-		margin: 100px auto;
-		transition: all .5s ease;
-		
-	}
-	div:hover{
-		transform: rotate(180deg);
-		border-radius: 50px;
-	}
-</style>
-<script type="text/javascript">
-	
-</script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <style type="text/css">
+    body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+    #panorama {width:100%; height: 500px;}
+    #result {width:100%;font-size:12px;}
+  </style>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=您的密钥"></script>
+  <title>设置全景内的展示的POI类型</title>
 </head>
 <body>
-<div></div>
+  <div id="panorama"></div>
+  <div id="result">
+    POI类型显示: :
+      <select id="setPanoramaPOIType" style="size:20px" onchange="test.poiType(this)">
+        <option value="0">无(隐藏所有POI)</option>
+        <option value="1">酒店</option>
+        <option value="2">餐饮</option>
+        <option value="3">电影院</option>
+        <option value="4">公交站点</option>
+        <option value="5">室内景点</option>
+      </select>
+  </div>
 </body>
 </html>
+<script type="text/javascript">
+  var panorama = new BMap.Panorama('panorama'); 
+  panorama.setPosition(new BMap.Point(116.321463, 39.984738));
+  panorama.setPov({pitch: 6, heading: 138});
+
+  document.getElementById("setPanoramaPOIType").onchange = function(){
+    var selectValue = this.value;
+    switch(selectValue) {
+      case '0': 
+        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_NONE); //无(隐藏所有POI)
+        break;
+      case '1': 
+        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_HOTEL); //酒店
+        panorama.setPov({pitch: 6, heading: 138}); //手动参数，场景内已有该室内景，旋转后可见，现调整角度到该POI点的位置，方便开发者可见
+        break;
+      case '2': 
+        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_CATERING); //餐饮
+        panorama.setPov({pitch: 6, heading: 138});
+        break;
+      case '3': 
+        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_MOVIE); //电影院
+        panorama.setPov({pitch: 6, heading: 138});
+        break;
+      case '4': 
+        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_TRANSIT); //公交站点，该场景（id为0100220000130902152251545J3）附近无站点POI
+        break;
+      case '5': 
+        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_INDOOR_SCENE); //室内景点
+        panorama.setPov({
+          pitch: 18.960000000000015, 
+          heading: 350.16741512558605
+        }); 
+        break;
+      default:
+        //无
+    } 
+  };
+</script>
+
