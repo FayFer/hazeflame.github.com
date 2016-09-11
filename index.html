@@ -1,67 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-  <style type="text/css">
-    body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
-    #panorama {width:100%; height: 500px;}
-    #result {width:100%;font-size:12px;}
-  </style>
-  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=您的密钥"></script>
-  <title>设置全景内的展示的POI类型</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style type="text/css">
+	body{
+		background:#D6E9C6 !important;
+		color: #fff !important;
+	}
+	.bg{
+		text-align: center;
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		background: url(stock-photo-99282877.jpg) center;
+		background-size: cover;
+		width: 100%;
+	}
+	*{
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+	.Entrance{
+		position: absolute;
+		width: 618px;
+		margin-top: 40px;
+	}
+	.Entrance input:nth-child(1){
+		width: 530px;
+	}
+	.Entrance input:nth-child(2){
+		cursor: pointer;
+	}
+	#today{
+		margin:100px 0;
+	}
+</style>
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
+<script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	$(function(){
+		var oT=document.querySelector('.Entrance input');
+		var oToday=document.getElementById("today")
+		var oBtn=document.getElementById("btn");
+		var oWeek=document.getElementById("week");
+		var oUl=oWeek.children;
+		$.ajax({
+				type:"get",
+				url:"http://v.juhe.cn/weather/index",
+				data:{
+					key:'4b826f943607fb785f0e749be9a5b86d',
+					cityname:'北京'
+				},
+				async:true,
+				dataType:'jsonp',
+				success:function(json){
+					console.log(json);
+					var str=
+						'<li><span></span>'+json.result.today.city+'</li>'+
+						'<li>'+json.result.today.week+'</li>'+
+						'<li><span></span>'+json.result.today.date_y+'</li>'+
+						'<li>'+json.result.today.temperature+'</li>'+
+						'<li>'+json.result.today.dressing_index+'</li>'+
+						'<li><span>天气状况:</span>'+json.result.today.weather+'</li>'+
+						'<li><span>今日建议:</span>'+json.result.today.dressing_advice+'</li>';
+					oToday.innerHTML=str;
+				}
+			});
+		oBtn.onclick=function(){
+			$.ajax({
+				type:"get",
+				url:"http://v.juhe.cn/weather/index",
+				data:{
+					key:'4b826f943607fb785f0e749be9a5b86d',
+					cityname:oT.value
+				},
+				async:true,
+				dataType:'jsonp',
+				success:function(json){
+					console.log(json);
+					var str=
+						'<li><span></span>'+json.result.today.city+'</li>'+
+						'<li>'+json.result.today.week+'</li>'+
+						'<li><span></span>'+json.result.today.date_y+'</li>'+
+						'<li>'+json.result.today.temperature+'</li>'+
+						'<li>'+json.result.today.dressing_index+'</li>'+
+						'<li><span>天气状况:</span>'+json.result.today.weather+'</li>'+
+						'<li><span>今日建议:</span>'+json.result.today.dressing_advice+'</li>';
+					oToday.innerHTML=str;
+
+//					for (var i=0; i<oUl.length;i++) {
+//						oUl[i].innerHTML=
+//							'<li><span></span>'+json.result.future.day_20160911+'</li>'+
+//							'<li>'+json.result.future.day_20160912+'</li>'+
+//							'<li><span></span>'+json.result.future.day_20160913+'</li>'+
+//							'<li>'+json.result.future.day_20160914+'</li>'+
+//							'<li>'+json.result.future.day_20160915+'</li>';
+//					}
+				}
+			});
+		}
+		
+	});
+</script>
+<title></title>
 </head>
 <body>
-  <div id="panorama"></div>
-  <div id="result">
-    POI类型显示: :
-      <select id="setPanoramaPOIType" style="size:20px" onchange="test.poiType(this)">
-        <option value="0">无(隐藏所有POI)</option>
-        <option value="1">酒店</option>
-        <option value="2">餐饮</option>
-        <option value="3">电影院</option>
-        <option value="4">公交站点</option>
-        <option value="5">室内景点</option>
-      </select>
-  </div>
+	<div class="bg"></div>
+	<div style="position: absolute;z-index: 1;">
+		<div class="Entrance">
+			<input type="text" placeholder="输入城市" class="inputBox search-query top"/>
+			<input type="button" class="btn disabled " id="btn" value="查询"/>
+		</div>
+		<ul id="today"></ul>
+		<div id="week">
+			<ul id="week1"></ul>
+			<ul id="week2"></ul>
+			<ul id="week3"></ul>
+			<ul id="week4"></ul>
+			<ul id="week5"></ul>
+			<ul id="week6"></ul>
+			<ul id="week7"></ul>
+		</div>
+		
+	</div>
 </body>
 </html>
-<script type="text/javascript">
-  var panorama = new BMap.Panorama('panorama'); 
-  panorama.setPosition(new BMap.Point(116.321463, 39.984738));
-  panorama.setPov({pitch: 6, heading: 138});
-
-  document.getElementById("setPanoramaPOIType").onchange = function(){
-    var selectValue = this.value;
-    switch(selectValue) {
-      case '0': 
-        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_NONE); //无(隐藏所有POI)
-        break;
-      case '1': 
-        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_HOTEL); //酒店
-        panorama.setPov({pitch: 6, heading: 138}); //手动参数，场景内已有该室内景，旋转后可见，现调整角度到该POI点的位置，方便开发者可见
-        break;
-      case '2': 
-        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_CATERING); //餐饮
-        panorama.setPov({pitch: 6, heading: 138});
-        break;
-      case '3': 
-        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_MOVIE); //电影院
-        panorama.setPov({pitch: 6, heading: 138});
-        break;
-      case '4': 
-        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_TRANSIT); //公交站点，该场景（id为0100220000130902152251545J3）附近无站点POI
-        break;
-      case '5': 
-        panorama.setPanoramaPOIType(BMAP_PANORAMA_POI_INDOOR_SCENE); //室内景点
-        panorama.setPov({
-          pitch: 18.960000000000015, 
-          heading: 350.16741512558605
-        }); 
-        break;
-      default:
-        //无
-    } 
-  };
-</script>
-
