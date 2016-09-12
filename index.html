@@ -25,11 +25,7 @@
 	}
 	.Entrance{
 		position: absolute;
-		width: 618px;
 		margin-top: 40px;
-	}
-	.Entrance input:nth-child(1){
-		width: 530px;
 	}
 	.Entrance input:nth-child(2){
 		cursor: pointer;
@@ -46,7 +42,7 @@
 <script type="text/javascript">
 	$(function(){
 		var oT=document.querySelector('.Entrance input');
-		var oToday=document.getElementById("today")
+		var oToday=document.getElementById("today");
 		var oBtn=document.getElementById("btn");
 		var oWeek=document.getElementById("week");
 		var oUl=oWeek.children;
@@ -155,7 +151,7 @@
 	<div class="bg"></div>
 	<div style="position: absolute;z-index: 1;">
 		<div class="Entrance">
-			<input type="text" placeholder="输入城市" class="inputBox search-query top"/>
+			<input type="text" placeholder="输入城市" class="input-xlarge search-query top"/>
 			<input type="button" class="btn disabled " id="btn" value="查询"/>
 		</div>
 		<ul id="today"></ul>
