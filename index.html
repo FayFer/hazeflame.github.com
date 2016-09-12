@@ -2,7 +2,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style type="text/css">
 	body{
 		background:#D6E9C6 !important;
@@ -15,13 +14,13 @@
 		top: 0;
 		bottom: 0;
 		right: 0;
-		background:url(img/stock-photo-99282877.jpg) center;
+		background:url(bootstrap/img/stock-photo-99282877.jpg) center;
 		background-size: cover;
 		width: 100%;
 	}
 	*{
 		padding: 0;
-		margin: 0;
+		margin: 0 ;
 		list-style: none;
 	}
 	.Entrance{
@@ -38,9 +37,12 @@
 	#today{
 		margin:100px 0;
 	}
+	#week ul{
+		float: left;
+	}
 </style>
-<link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
-<script src="js/jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
+<script src="bootstrap/js/jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
 	$(function(){
 		var oT=document.querySelector('.Entrance input');
@@ -48,7 +50,7 @@
 		var oBtn=document.getElementById("btn");
 		var oWeek=document.getElementById("week");
 		var oUl=oWeek.children;
-		$.ajax({
+			$.ajax({
 				type:"get",
 				url:"http://v.juhe.cn/weather/index",
 				data:{
@@ -58,19 +60,47 @@
 				async:true,
 				dataType:'jsonp',
 				success:function(json){
-					console.log(json);
+//					console.log(json);
 					var str=
-						'<li><span></span>'+json.result.today.city+'</li>'+
+						'<li>'+json.result.today.city+'</li>'+
 						'<li>'+json.result.today.week+'</li>'+
-						'<li><span></span>'+json.result.today.date_y+'</li>'+
+						'<li>'+json.result.today.date_y+'</li>'+
 						'<li>'+json.result.today.temperature+'</li>'+
 						'<li>'+json.result.today.dressing_index+'</li>'+
 						'<li><span>天气状况:</span>'+json.result.today.weather+'</li>'+
 						'<li><span>今日建议:</span>'+json.result.today.dressing_advice+'</li>';
 					oToday.innerHTML=str;
+					
+					var arr=[];
+					var future=json.result.future;
+//					console.log(future)
+					for (var name in future) {
+						var str='<li>'+future[name].date+'</li>'+
+								'<li>'+future[name].temperature+'</li>'+
+								'<li>'+future[name].weather+'</li>'+
+								'<li>'+future[name].week+'</li>'+
+								'<li>'+future[name].wind+'</li>';
+						arr.push(str);
+					}
+					arr.splice(0,1)
+					for (var i=0; i<oUl.length;i++) {
+						oUl[i].innerHTML=arr[i];
+					}
+				},
+				error:function(){
+					alert('请求天气失败');
 				}
 			});
+		$('.top').on('keyup',function(ev){
+			var ev=ev||event;
+			if (ev.keyCode==13) {
+				getWeather();
+			}
+		});
 		oBtn.onclick=function(){
+			getWeather();
+		}
+		function getWeather(){
 			$.ajax({
 				type:"get",
 				url:"http://v.juhe.cn/weather/index",
@@ -81,29 +111,42 @@
 				async:true,
 				dataType:'jsonp',
 				success:function(json){
-					console.log(json);
-					var str=
-						'<li><span></span>'+json.result.today.city+'</li>'+
-						'<li>'+json.result.today.week+'</li>'+
-						'<li><span></span>'+json.result.today.date_y+'</li>'+
-						'<li>'+json.result.today.temperature+'</li>'+
-						'<li>'+json.result.today.dressing_index+'</li>'+
-						'<li><span>天气状况:</span>'+json.result.today.weather+'</li>'+
-						'<li><span>今日建议:</span>'+json.result.today.dressing_advice+'</li>';
-					oToday.innerHTML=str;
-
-//					for (var i=0; i<oUl.length;i++) {
-//						oUl[i].innerHTML=
-//							'<li><span></span>'+json.result.future.day_20160911+'</li>'+
-//							'<li>'+json.result.future.day_20160912+'</li>'+
-//							'<li><span></span>'+json.result.future.day_20160913+'</li>'+
-//							'<li>'+json.result.future.day_20160914+'</li>'+
-//							'<li>'+json.result.future.day_20160915+'</li>';
-//					}
+					if (json.resultcode==200) {
+							var str=
+							'<li>'+json.result.today.city+'</li>'+
+							'<li>'+json.result.today.week+'</li>'+
+							'<li>'+json.result.today.date_y+'</li>'+
+							'<li>'+json.result.today.temperature+'</li>'+
+							'<li>'+json.result.today.dressing_index+'</li>'+
+							'<li><span>天气状况:</span>'+json.result.today.weather+'</li>'+
+							'<li><span>今日建议:</span>'+json.result.today.dressing_advice+'</li>';
+						oToday.innerHTML=str;
+						
+						var arr=[];
+						var future=json.result.future;
+	//					console.log(future)
+						for (var name in future) {
+							var str='<li>'+future[name].date+'</li>'+
+									'<li>'+future[name].temperature+'</li>'+
+									'<li>'+future[name].weather+'</li>'+
+									'<li>'+future[name].week+'</li>'+
+									'<li>'+future[name].wind+'</li>';
+							arr.push(str);
+						}
+						arr.splice(0,1);
+						for (var i=0; i<oUl.length;i++) {
+							oUl[i].innerHTML=arr[i];
+						}
+					}else{
+						alert(json.reason+',请重新输入');
+						oT.value='';
+					}
+				},
+				error:function(){
+					alert('获取天气失败')
 				}
 			});
 		}
-		
 	});
 </script>
 <title></title>
@@ -116,16 +159,15 @@
 			<input type="button" class="btn disabled " id="btn" value="查询"/>
 		</div>
 		<ul id="today"></ul>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未来一周天气</p>
 		<div id="week">
-			<ul id="week1"></ul>
-			<ul id="week2"></ul>
-			<ul id="week3"></ul>
-			<ul id="week4"></ul>
-			<ul id="week5"></ul>
-			<ul id="week6"></ul>
-			<ul id="week7"></ul>
-		</div>
-		
+			<ul></ul>
+			<ul></ul>
+			<ul></ul>
+			<ul></ul>
+			<ul></ul>
+			<ul></ul>
+		</div>		
 	</div>
 </body>
 </html>
