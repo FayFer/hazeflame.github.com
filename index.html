@@ -1,169 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<style type="text/css">
-	body{
-		background:#D6E9C6 !important;
-		color: #fff !important;
-	}
-	.bg{
-		text-align: center;
-		position: absolute;
-		left: 0;
-		top: 0;
-		bottom: 0;
-		right: 0;
-		background:url(bootstrap/img/stock-photo-99282877.jpg) center;
-		background-size: cover;
-		width: 100%;
-	}
-	*{
-		padding: 0;
-		margin: 0 ;
-		list-style: none;
-	}
-	.Entrance{
-		position: absolute;
-		margin-top: 40px;
-	}
-	.Entrance input:nth-child(2){
-		cursor: pointer;
-	}
-	#today{
-		margin:100px 0;
-	}
-	#week ul{
-		float: left;
-	}
-</style>
-<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
-<script src="bootstrap/js/jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript">
-	$(function(){
-		var oT=document.querySelector('.Entrance input');
-		var oToday=document.getElementById("today");
-		var oBtn=document.getElementById("btn");
-		var oWeek=document.getElementById("week");
-		var oUl=oWeek.children;
-			$.ajax({
-				type:"get",
-				url:"http://v.juhe.cn/weather/index",
-				data:{
-					key:'4b826f943607fb785f0e749be9a5b86d',
-					cityname:'北京'
-				},
-				async:true,
-				dataType:'jsonp',
-				success:function(json){
-//					console.log(json);
-					var str=
-						'<li>'+json.result.today.city+'</li>'+
-						'<li>'+json.result.today.week+'</li>'+
-						'<li>'+json.result.today.date_y+'</li>'+
-						'<li>'+json.result.today.temperature+'</li>'+
-						'<li>'+json.result.today.dressing_index+'</li>'+
-						'<li><span>天气状况:</span>'+json.result.today.weather+'</li>'+
-						'<li><span>今日建议:</span>'+json.result.today.dressing_advice+'</li>';
-					oToday.innerHTML=str;
-					
-					var arr=[];
-					var future=json.result.future;
-//					console.log(future)
-					for (var name in future) {
-						var str='<li>'+future[name].date+'</li>'+
-								'<li>'+future[name].temperature+'</li>'+
-								'<li>'+future[name].weather+'</li>'+
-								'<li>'+future[name].week+'</li>'+
-								'<li>'+future[name].wind+'</li>';
-						arr.push(str);
-					}
-					arr.splice(0,1)
-					for (var i=0; i<oUl.length;i++) {
-						oUl[i].innerHTML=arr[i];
-					}
-				},
-				error:function(){
-					alert('请求天气失败');
-				}
-			});
-		$('.top').on('keyup',function(ev){
-			var ev=ev||event;
-			if (ev.keyCode==13) {
-				getWeather();
-			}
-		});
-		oBtn.onclick=function(){
-			getWeather();
-		}
-		function getWeather(){
-			$.ajax({
-				type:"get",
-				url:"http://v.juhe.cn/weather/index",
-				data:{
-					key:'4b826f943607fb785f0e749be9a5b86d',
-					cityname:oT.value
-				},
-				async:true,
-				dataType:'jsonp',
-				success:function(json){
-					if (json.resultcode==200) {
-							var str=
-							'<li>'+json.result.today.city+'</li>'+
-							'<li>'+json.result.today.week+'</li>'+
-							'<li>'+json.result.today.date_y+'</li>'+
-							'<li>'+json.result.today.temperature+'</li>'+
-							'<li>'+json.result.today.dressing_index+'</li>'+
-							'<li><span>天气状况:</span>'+json.result.today.weather+'</li>'+
-							'<li><span>今日建议:</span>'+json.result.today.dressing_advice+'</li>';
-						oToday.innerHTML=str;
-						
-						var arr=[];
-						var future=json.result.future;
-	//					console.log(future)
-						for (var name in future) {
-							var str='<li>'+future[name].date+'</li>'+
-									'<li>'+future[name].temperature+'</li>'+
-									'<li>'+future[name].weather+'</li>'+
-									'<li>'+future[name].week+'</li>'+
-									'<li>'+future[name].wind+'</li>';
-							arr.push(str);
-						}
-						arr.splice(0,1);
-						for (var i=0; i<oUl.length;i++) {
-							oUl[i].innerHTML=arr[i];
-						}
-					}else{
-						alert(json.reason+',请重新输入');
-						oT.value='';
-					}
-				},
-				error:function(){
-					alert('获取天气失败')
-				}
-			});
-		}
-	});
-</script>
-<title></title>
+    <meta charset="utf-8"/>
+    <title>李宁前端工程师</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all"/>
 </head>
 <body>
-	<div class="bg"></div>
-	<div style="position: absolute;z-index: 1;">
-		<div class="Entrance">
-			<input type="text" placeholder="输入城市" class="input-xlarge search-query top"/>
-			<input type="button" class="btn disabled " id="btn" value="查询"/>
-		</div>
-		<ul id="today"></ul>
-		<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未来一周天气</p>
-		<div id="week">
-			<ul></ul>
-			<ul></ul>
-			<ul></ul>
-			<ul></ul>
-			<ul></ul>
-			<ul></ul>
-		</div>		
-	</div>
+<div class="wrap shadow">
+    <ol id="ol" class="list">
+
+    </ol>
+</div>
+<script type="text/javascript">
+    var str = '',
+        data = [
+            [
+                { title : '第一章 表单常用代码'},
+                { url : 'e/1/index.html', title : '去除字符串左右的空格' },
+                { url : 'e/2/index.html', title : '验证用户是否输入' },
+                { url : 'e/3/index.html', title : '禁止用户输入' },
+                { url : 'e/4/index.html', title : '关闭用户中文输入法' },
+                { url : 'e/5/index.html', title : '禁止用户复制和粘贴' },
+                { url : 'e/6/index.html', title : '限制只能输入数字' },
+                { url : 'e/7/index.html', title : '限制字符串长度' },
+                { url : 'e/8/index.html', title : '仿微博提示可输入剩余字数' },
+                { url : 'e/9/index.html', title : '换行文本自动滚动' },
+                { url : 'e/10/index.html', title : 'Ctrl + Return提交表单' },
+                { url : 'e/11/index.html', title : '文本内容进行关键字过滤' },
+                { url : 'e/12/index.html', title : '全选反选少选复选框' },
+                { url : 'e/13/index.html', title : '动态操作下拉选项' },
+                { url : 'e/14/index.html', title : '级联菜单' },
+                { url : 'e/15/index.html', title : '可添加的下拉选项' }
+            ],
+            [
+                { title : '第二章 常用图片相关代码'},
+                { url : 'e/16/index.html', title : '可添加的下拉选项' },
+                { url : 'e/17/index.html', title : '图片放大镜效果' },
+                { url : 'e/18/index.html', title : '点击图片逐渐放大' }
+            ],
+            [
+                { title : '第三章 内容展示常用代码'},
+                { url : 'e/19/index.html', title : '单元行上鼠标悬停提示' },
+                { url : 'c/6/index.html', title : '无刷新切换皮肤，刷新后保存' },
+                { url : 'e/20/index.html', title : '隔行换色鼠标经过换色' },
+                { url : 'e/21/index.html', title : '添加或删除表格行' },
+//                { url : 'e/22/index.html', title : '表格的行拖动' },
+                { url : 'c/1/index.html', title : '可拖动的弹出层' },
+                { url : 'c/2/index.html', title : '选项卡轮播' },
+                { url : 'c/3/index.html', title : '模拟滚动条' },
+                { url : 'c/4/index.html', title : '缓动的对联广告' },
+                { url : 'c/5/index.html', title : '拖动滑块验证' }
+            ],
+            [
+                { title : '第四章 常用图片轮换'},
+                { url : 'slide/01/index.html', title : '百度爱玩 - 图片轮换' },
+                { url : 'slide/02/bd02.html', title : '百度爱玩 - 遮罩下拉' },
+                { url : 'slide/03/bd03.html', title : '百度爱玩 - 榜单tab切换' },
+                { url : 'slide/04/index.html', title : 'css3弹出层' },
+                { url : 'slide/05/index.html', title : '米4-活动页面' },
+                { url : 'slide/06/index.html', title : '百度爱玩 - 图片轮换' },
+                { url : 'slide/07/index.html', title : '百度微购－中秋送好礼' },
+                { url : 'slide/08/index.html', title : '商品分类' },
+                { url : 'slide/10/index.html', title : '渐显的tab菜单2' },
+                { url : 'slide/09/index.html', title : '经典图片轮换－单个滚动' },
+                { url : 'slide/13/index.html', title : '经典图片轮换－整个翻页' }
+            ],
+            [
+                { title : '第五章 移动端效果'},
+                { url : 'm/01/index.html', title : '选项卡切换' }
+            ],
+            [
+                { title : '第六章 时间日期效果'},
+                { url : 'd/03/index.html', title : '全日历' },
+                { url : 'd/04/index.html', title : 'canvas实现小时钟' }
+            ],
+            [
+                { title : '第七章 项目列表'},
+                { url : 'other/1/荣宁科技/index.html', title : '荣宁科技' },
+                { url : 'other/1/淘宝/index.html', title : '淘宝' },
+                { url : 'other/1/灵魂回响/index.html', title : '灵魂回响' },
+                { url : 'http://www.wanmeirensheng.cn/', title : '完美人生' },
+                { url : 'http://www.sctyqc.cn/index.html', title : '天元乾程	' }
+                
+            ]
+        ];
+    for(var i = 0; i < data.length; i++){
+        var items = data[i];
+        var sub = '';
+        for(var j=0; j<items.length; j++){
+            var son = items[j];
+            if(j == 0){
+                sub += '<li><h1><a href="javascript:;" title="' + son.title + '">' + son.title + '</a></h1><dl class="sub-dl">';
+            } else {
+                sub += '<dd><a href="' + son.url + '" target="_blank" title="' + son.title + '">' + son.title + '</a></dd>';
+            }
+            if(j == items.length - 1){
+                sub += '</dl></li>';
+            }
+        }
+        str += sub;
+    }
+    var ol = document.getElementById('ol');
+    ol.innerHTML = str;
+    var h1 = ol.getElementsByTagName('h1');
+    var dl = ol.getElementsByTagName('dl');
+    var tmp = -1;
+    var open = false;
+    for(var i=0; i < h1.length; i++){
+        h1[i].index = i;
+        h1[i].onclick = function(){
+            for(var i=0; i<h1.length; i++){
+                dl[i].style.display = 'none';
+            }
+            if(tmp == this.index && open){
+                dl[this.index].style.display = 'none';
+                open = false;
+            } else {
+                dl[this.index].style.display = 'block';
+                open = true;
+            }
+            tmp = this.index;
+        }
+    }
+
+</script>
 </body>
 </html>

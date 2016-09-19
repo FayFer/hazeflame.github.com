@@ -1,2 +1,2 @@
 # hazeflame.github.com
-0000
+这是个人学习中的总结和几个项目
